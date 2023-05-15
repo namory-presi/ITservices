@@ -1,0 +1,79 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}| S'inscrire {% endblock title %}
+
+
+{% block content %}
+
+
+
+
+
+
+    <!-- ...:::: Start Customer Login Section :::... -->
+    <div class="customer-login" style="margin-block: 70px;">
+        <div class="container">
+            <div class="row">
+              
+                <!--login area start-->
+                {% comment %} <div class="col-lg-6 col-md-6">
+                    <div class="account_form" data-aos="fade-up" data-aos-delay="0">
+                        <h3>login</h3>
+                        <form action="#" method="POST">
+                            <div class="default-form-box">
+                                <label>Username or email <span>*</span></label>
+                                <input type="text">
+                            </div>
+                            <div class="default-form-box">
+                                <label>Passwords <span>*</span></label>
+                                <input type="password">
+                            </div>
+                            <div class="login_submit">
+                                <button class="btn btn-md btn-black-default-hover mb-4" type="submit">login</button>
+                                <label class="checkbox-default mb-4" for="offer">
+                                    <input type="checkbox" id="offer">
+                                    <span>Remember me</span>
+                                </label>
+                                <a href="#">Lost your password?</a>
+
+                            </div>
+                        </form>
+                    </div>
+                </div> {% endcomment %}
+                <!--login area start-->
+
+                <!--register area start-->
+                <div class="col-lg-6 col-md-6">
+                    <div class="account_form register" data-aos="fade-up" data-aos-delay="200">
+                        <h3>S'inscrire</h3>
+                        <form action="#" method="POST">
+                            {% csrf_token %}
+                            {% for field in form %}
+                            <div class="default-form-box">
+                                <label for="{{ field.id_for_label }}" >{{ field.label }} <span>*</span></label>
+                                {{ field }}
+                            </div>
+                            {% endfor %}
+                            {% comment %} <div class="default-form-box">
+                                <label>Passwords <span>*</span></label>
+                                <input type="password">
+                            </div> {% endcomment %}
+                            <div class="login_submit">
+                                <button class="btn btn-md btn-black-default-hover" type="submit">Register</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!--register area end-->
+            </div>
+        </div>
+    </div> <!-- ...:::: End Customer Login Section :::... -->
+
+
+
+
+
+
+{% endblock content %}

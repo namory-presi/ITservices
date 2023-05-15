@@ -1,0 +1,38 @@
+
+
+<form action="{% url 'cart:update'  %}" method="POST">
+
+    {% csrf_token %}
+    <input type="hidden" name="product_id" value="{{product.id}}">
+
+    {% comment %} {% if in_cart %}
+    
+        <div class="product-add-to-cart-btn">
+            <button type="submit" class="btn btn-block btn-lg btn-black-default-hover" data-bs-toggle="modal" data-bs-target="#modalAddcart">- Retirer</button>
+        </div>
+
+    {% else %}  {% endcomment %}
+
+        <div class="d-flex align-items-center">
+                            
+            <div class="variable-single-item ">
+                <span>Quantité</span>
+                <div class="product-variable-quantity">
+                    <input min="1" max="100" value="1" type="number" inputmode="numeric">
+                </div>
+            </div>
+        
+            {% if product in cart.products.all %}
+            <div class="product-add-to-cart-btn">
+                <button type="submit" class="btn btn-block btn-lg btn-black-default-hover" data-bs-toggle="modal" data-bs-target="#modalAddcart">- Retirer</button>
+            </div>
+            {% else %}
+            <div class="product-add-to-cart-btn">
+                <button type="submit"  class="btn btn-block btn-lg btn-black-default-hover" data-bs-toggle="modal" data-bs-target="#modalAddcart">+ Ajouter</button>
+            </div>
+            {% endif %} 
+        </div>
+
+    
+    {% comment %} {% endif %} {% endcomment %}
+</form>
