@@ -56,28 +56,33 @@
                                         <i class="icon-magnifier"></i>
                                     </a>
                                 </li>
-                               
+                                {% if request.user.is_authenticated %}
                                 <li>
-                                    <a href="#offcanvas-wishlish" class="offcanvas-toggle">
-                                        <i class="icon-heart"></i>
-                                        <span class="item-count">3</span>
+                                    <a href="{% url 'account:logout' %}">
+                                        <ion-icon name="log-out-outline"></ion-icon>
+
+                                        {% comment %} <span class="item-count">3</span> {% endcomment %}
                                     </a>
                                 </li>
+                                {% else %}
+                                    <li>
+                                        <a href="{% url 'account:login' %}" >
+                                            <ion-icon name="person-outline"></ion-icon>
+                                            {% comment %} <span class="item-count">3</span> {% endcomment %}
+                                        </a>
+                                    </li>
+                                {% endif %}
                                 <li>
                                     <!-- <a href="#offcanvas-add-cart" class="offcanvas-toggle"> -->
-                                    <a href="#">
+                                    <a href="{% url 'cart:main' %}">
                                         <i class="icon-bag"></i>
                                         
-                                        <span class="item-count" id="basket-qty">
-                                            {% with qty=baskets|length %}
-
-                                                {% if qty > 0 %}
-                                                    {{ qty }}
-                                                {% else %}
-                                                    {{ qty|stringformat:"0d" }}
-                                                {% endif %}
-                                            
-                                            {% endwith %}
+                                        <span class="item-count" id="panier">
+                                            {% if request.session.cart_items %}
+                                            {{ request.session.cart_items }}                                      
+                                            {% else %}
+                                                0
+                                            {% endif %} 
                                         </span>
                                     </a>
                                 </li>
@@ -120,25 +125,32 @@
                                     <i class="icon-magnifier"></i>
                                 </a>
                             </li>
-                            <li>
-                                <a href="#offcanvas-wishlish" class="offcanvas-toggle">
-                                    <i class="icon-heart"></i>
-                                    <span class="item-count">3</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" id="basket-qty">
-                                    <i class="icon-bag"></i>
-                                    <span class="item-count" >
-                                        {% with qty=baskets|length %}
+                            {% if request.user.is_authenticated %}
+                                <li>
+                                    <a href="{% url 'account:logout' %}">
+                                        <ion-icon name="log-out-outline"></ion-icon>
 
-                                            {% if qty > 0 %}
-                                                {{ qty }}
-                                            {% else %}
-                                                {{ qty|stringformat:"0d" }}
-                                            {% endif %}
-                                    
-                                        {% endwith %}
+                                        {% comment %} <span class="item-count">3</span> {% endcomment %}
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li>
+                                    <a href="{% url 'account:login' %}" >
+                                        <ion-icon name="person-outline"></ion-icon>
+                                        {% comment %} <span class="item-count">3</span> {% endcomment %}
+                                    </a>
+                                </li>
+                            {% endif %}
+                            
+                            <li>
+                                <a href="{% url 'cart:main' %}" id="basket-qty">
+                                    <i class="icon-bag"></i>
+                                    <span class="item-count" id="panier">
+                                        {% if request.session.cart_items %}
+                                            {{ request.session.cart_items }}                                      
+                                        {% else %}
+                                            0
+                                        {% endif %}
                                     </span>
                                 </a>
                             </li>

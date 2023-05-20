@@ -69,6 +69,7 @@ class UserAdminCreationForm(forms.ModelForm):
         # Save the provided password in hashed format
         user = super().save(commit=False)
         user.set_password(self.cleaned_data["password"])
+        user.is_active = False
         if commit:
             user.save()
         return user
@@ -93,11 +94,15 @@ class UserAdminChangeForm(forms.ModelForm):
 
 
 class GuestForm(forms.Form):
-    email = forms.EmailField(max_length=254)
+    email = forms.EmailField(max_length=254, required=True,  widget=forms.EmailInput(attrs={
+        'placeholder': 'Votre adresse email en tant qu\'invité'
+    }))
     
 
 class UserLogin(forms.Form):
-    username = forms.CharField(label="Nom d'utilisateur")
+    username = forms.EmailField(label="Adresse email",required=True, widget=forms.EmailInput(attrs={
+        'placeholder': 'Votre adresse email'
+    }))
     password = forms.CharField(label="Mot de passe", widget=forms.PasswordInput(attrs={
         'placeholder': 'Votre mot de passe'
     }))

@@ -4,8 +4,8 @@ from django.contrib.auth import get_user_model
 from django.db.models.signals import *
 from core.apps.account.models import GuestEmail
 
-# User = get_user_model()
-User = settings.AUTH_USER_MODEL
+User = get_user_model()
+# User = settings.AUTH_USER_MODEL
 
 class BillingProfileManager(models.Manager):
     def new_or_get(self, request):
@@ -30,7 +30,6 @@ class BillingProfileManager(models.Manager):
 
 class BillingProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True, verbose_name='client')
-    # user  = models.ForeignKey(User, on_delete=models.CASCADE, unique=True, null=True, blank=True)
     email = models.EmailField(max_length=254)
     active = models.BooleanField(default=True)
     update = models.DateTimeField("dernière modification", auto_now=True)

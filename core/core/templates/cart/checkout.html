@@ -6,150 +6,136 @@
 {% url 'account:guest_register_url' as guest_register %}
 {% block content %}
 
+{% comment %} {{ object.order_id}} / {{ object.cart }} {% endcomment %}
 
-{{ order.order_id}} -- {{ order.cart}}
-
-{% if not billing_profile %}
-
-
-{% comment %} 
-    {% include "include/login_form.html" with form=login_form next_url=request.build_absolute_uri action_url=guest_register %}
-{% endcomment %}
+    {% if not billing_profile %}
 
 
-{% else %}
-
-    {% if not order.shipping_address  %}
+    {% include 'snippet/form.html' with form=login_form next_url=request.build_absolute_uri %}
 
 
+
+    {% url 'account:guest_register' as guest_register_url  %}
+
+    {% include 'snippet/form.html' with form=guest_form next_url=request.build_absolute_uri  action_url=guest_register_url %}
         
-    {% else %} 
+    <!-- <div class="checkout-section" style="margin-block: 70px;">
+        <div class="container">
+            <div class="row">
 
+                <div class="col-12">
+                    <div class="user-actions accordion" data-aos="fade-up" data-aos-delay="0">
+                        <h3>
+                            <i class="fa fa-file-o" aria-hidden="true"></i>
+                            Returning customer?
+                            <a class="Returning" href="#" data-bs-toggle="collapse" data-bs-target="#checkout_login"
+                                aria-expanded="true">Cliquez ici pour vous connecter</a>
+                        </h3>
+                        <div id="checkout_login" class="collapse" data-parent="#checkout_login">
+                            <div class="checkout_info">
+                                <p>Si vous n'avez pas encore de compte</p>
+                                <form action="#">
+                                    <div class="form_group default-form-box">
+                                        <label>Username or email <span>*</span></label>
+                                        <input type="text">
+                                    </div>
+                                    <div class="form_group default-form-box">
+                                        <label>Password <span>*</span></label>
+                                        <input type="password">
+                                    </div>
+                                    <div class="form_group group_3 default-form-box">
+                                        <button class="btn btn-md btn-black-default-hover" type="submit">Login</button>
+                                        <label class="checkbox-default">
+                                            <input type="checkbox">
+                                            <span>Remember me</span>
+                                        </label>
+                                    </div>
+                                    <a href="#">Lost your password?</a>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+
+            </div>
+
+        </div>
+    </div> -->
+
+
+    {% else %}
+
+        {% if not object.shipping_address %}
+
+        {% url 'address:shipping' as shipping  %}
+
+        {% include 'address/form.html' with form=address_form next_url=request.build_absolute_uri  action_url=shipping address_type='livraison' %}
+            
+        {% else %}
 
         <!-- ...:::: Start Checkout Section:::... -->
         <div class="checkout-section" style="margin-block: 70px;">
             <div class="container">
-                {% comment %} <div class="row">
-                    <div class="col-12">
-                        <div class="user-actions accordion" data-aos="fade-up" data-aos-delay="0">
-                            <h3>
-                                <i class="fa fa-file-o" aria-hidden="true"></i>
-                                Returning customer?
-                                <a class="Returning" href="#" data-bs-toggle="collapse" data-bs-target="#checkout_login"
-                                    aria-expanded="true">Click here to login</a>
-                            </h3>
-                            <div id="checkout_login" class="collapse" data-parent="#checkout_login">
-                                <div class="checkout_info">
-                                    <p>If you have shopped with us before, please enter your details in the boxes below. If
-                                        you are a new customer please proceed to the Billing &amp; Shipping section.</p>
-                                    <form action="#">
-                                        <div class="form_group default-form-box">
-                                            <label>Username or email <span>*</span></label>
-                                            <input type="text">
-                                        </div>
-                                        <div class="form_group default-form-box">
-                                            <label>Password <span>*</span></label>
-                                            <input type="password">
-                                        </div>
-                                        <div class="form_group group_3 default-form-box">
-                                            <button class="btn btn-md btn-black-default-hover" type="submit">Login</button>
-                                            <label class="checkbox-default">
-                                                <input type="checkbox">
-                                                <span>Remember me</span>
-                                            </label>
-                                        </div>
-                                        <a href="#">Lost your password?</a>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="user-actions accordion" data-aos="fade-up" data-aos-delay="200">
-                            <h3>
-                                <i class="fa fa-file-o" aria-hidden="true"></i>
-                                Returning customer?
-                                <a class="Returning" href="#" data-bs-toggle="collapse" data-bs-target="#checkout_coupon"
-                                    aria-expanded="true">Click here to enter your code</a>
 
-                            </h3>
-                            <div id="checkout_coupon" class="collapse checkout_coupon" data-parent="#checkout_coupon">
-                                <div class="checkout_info">
-                                    <form action="#">
-                                        <input placeholder="Coupon code" type="text">
-                                        <button class="btn btn-md btn-black-default-hover" type="submit">Apply
-                                            coupon</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> {% endcomment %}
-                <!-- Start User Details Checkout Form -->
+
                 <div class="checkout_form" data-aos="fade-up" data-aos-delay="400">
                     <div class="row">
                         <div class="col-lg-6 col-md-6">
-                            <form action="#" method="POST" novalidate>
-                                <h3>Details de facturation</h3>
-                                <div class="row">
-                                    {% for field in address_form  %}
-                                    <div class="col-lg-6">
-                                        <div class="default-form-box">
-                                            <label for="{{ label_for_id }}"> {{ field.label }}<span>*</span></label>
-                                            {{ field }}
-                                        </div>
-                                    </div>
-                                    {% endfor %}
+                            <form action="#">
+                                <h3 style="text-transform: lowercase;">Details de facturation</h3>
 
-                                    {% comment %} <div class="col-lg-6">
-                                        <div class="default-form-box">
-                                            <label>Telephone <span>*</span></label>
-                                            {{ address_form.mobile_phone}}
-                                        </div>
-                                    </div>
+                                <!-- {{ shipping.as_p }} -->
+
+                                <div class="row">
+
+                                    {% comment %} {{ address_form.as_p }} {% endcomment %}
+
                                     <div class="col-lg-6">
                                         <div class="default-form-box">
-                                            <label for="{{ address_form.lastname.label_for_id}}">{{ addresse_form.lastname.label }}<span>*</span></label>
-                                            {{ address_form.lastname}}
+                                            <label>{{ address_form.lastname.label }} <span>*</span></label>
+                                            {{ address_form.lastname }}
                                         </div>
                                     </div>
+
                                     <div class="col-lg-6">
                                         <div class="default-form-box">
-                                            <label>Last Name <span>*</span></label>
-                                            <input type="text">
+                                            <label>{{ address_form.firstname.label }} <span>*</span></label>
+                                            {{ address_form.firstname }}
                                         </div>
                                     </div>
-                                    
+
                                     <div class="col-12">
                                         <div class="default-form-box">
-                                            <label for="country">country <span>*</span></label>
-                                            
-                                             <select class="country_option nice-select wide" name="country" id="country">
-                                                <option value="2">Bangladesh</option>
-                                                <option value="3">Algeria</option>
+                                            <label for="country">{{address_form.country.label}} <span>*</span></label>
+                                            {{ address_form.country }}
+                                            {% comment %} <select class="country_option nice-select wide" name="country" id="country">
+                                                <option value="{{address_form.country}}">{{ address_form.country }}</option> {% endcomment %}
+                                                {% comment %} <option value="3">Algeria</option>
                                                 <option value="4">Afghanistan</option>
                                                 <option value="5">Ghana</option>
                                                 <option value="6">Albania</option>
                                                 <option value="7">Bahrain</option>
                                                 <option value="8">Colombia</option>
-                                                <option value="9">Dominican Republic</option>
-                                            </select> 
-                                        </div>
-                                    </div>
-
-                                    <div class="col-12">
-                                        <div class="default-form-box">
-                                            <label>Street address <span>*</span></label>
-                                            <input placeholder="House number and street name" type="text">
+                                                <option value="9">Dominican Republic</option> {% endcomment %}
+                                            {% comment %} </select> {% endcomment %}
                                         </div>
                                     </div>
                                     <div class="col-12">
                                         <div class="default-form-box">
-                                            <input placeholder="Apartment, suite, unit etc. (optional)" type="text">
+                                            <label>{{ address_form.city.label }} <span>*</span></label>
+                                            {{ address_form.city }}
                                         </div>
                                     </div>
                                     <div class="col-12">
                                         <div class="default-form-box">
-                                            <label>Town / City <span>*</span></label>
-                                            <input type="text">
+                                            {{ address_form.address }}
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="default-form-box">
+                                            <label>{{address_form.street_address.label}} <span>*</span></label>
+                                            {{address_form.street_address}}
                                         </div>
                                     </div>
                                     <div class="col-12">
@@ -157,8 +143,8 @@
                                             <label>State / County <span>*</span></label>
                                             <input type="text">
                                         </div>
-                                    </div>  {% endcomment %}
-                                    {% comment %} <div class="col-lg-6">
+                                    </div>
+                                    <div class="col-lg-6">
                                         <div class="default-form-box">
                                             <label>Phone<span>*</span></label>
                                             <input type="text">
@@ -166,121 +152,24 @@
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="default-form-box">
-                                            <label> Email Address <span>*</span></label>
-                                            <input type="text">
-                                        </div>
-                                    </div> {% endcomment %}
-                                    <div class="col-12">
-                                        <label class="checkbox-default" for="newAccount" data-bs-toggle="collapse"
-                                            data-bs-target="#newAccountPassword">
-                                            <input type="checkbox" id="newAccount">
-                                            <span>Create an account?</span>
-                                        </label>
-                                        <div id="newAccountPassword" class="collapse mt-3"
-                                            data-parent="#newAccountPassword">
-                                            <div class="card-body1 default-form-box">
-                                                <label> Account password <span>*</span></label>
-                                                <input placeholder="password" type="password">
-                                            </div>
+                                            <label> {{ address_form.billing.user }} <span>*</span></label>
+                                            {{address_form.billing.user}}
                                         </div>
                                     </div>
-                                    <div class="col-12">
-                                        <label class="checkbox-default" for="newShipping" data-bs-toggle="collapse"
-                                            data-bs-target="#anotherShipping">
-                                            <input type="checkbox" id="newShipping">
-                                            <span>Ship to a different address?</span>
-                                        </label>
-
-                                        <div id="anotherShipping" class="collapse mt-3" data-parent="#anotherShipping">
-                                            <div class="row">
-                                                <div class="col-lg-6">
-                                                    <div class="default-form-box">
-                                                        <label>First Name <span>*</span></label>
-                                                        <input type="text">
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-6">
-                                                    <div class="default-form-box">
-                                                        <label>Last Name <span>*</span></label>
-                                                        <input type="text">
-                                                    </div>
-                                                </div>
-                                                <div class="col-12">
-                                                    <div class="default-form-box">
-                                                        <label>Company Name</label>
-                                                        <input type="text">
-                                                    </div>
-                                                </div>
-                                                <div class="col-12">
-                                                    <div class="select_form_select default-form-box">
-                                                        <label for="countru_name">country <span>*</span></label>
-                                                        <select class="niceselect_option wide" name="cuntry"
-                                                            id="countru_name">
-                                                            <option value="2">Bangladesh</option>
-                                                            <option value="3">Algeria</option>
-                                                            <option value="4">Afghanistan</option>
-                                                            <option value="5">Ghana</option>
-                                                            <option value="6">Albania</option>
-                                                            <option value="7">Bahrain</option>
-                                                            <option value="8">Colombia</option>
-                                                            <option value="9">Dominican Republic</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-12">
-                                                    <div class="default-form-box">
-                                                        <label>Street address <span>*</span></label>
-                                                        <input placeholder="House number and street name" type="text">
-                                                    </div>
-                                                </div>
-                                                <div class="col-12">
-                                                    <div class="default-form-box">
-                                                        <input placeholder="Apartment, suite, unit etc. (optional)"
-                                                            type="text">
-                                                    </div>
-                                                </div>
-                                                <div class="col-12">
-                                                    <div class="default-form-box">
-                                                        <label>Town / City <span>*</span></label>
-                                                        <input type="text">
-                                                    </div>
-                                                </div>
-                                                <div class="col-12">
-                                                    <div class="default-form-box">
-                                                        <label>State / County <span>*</span></label>
-                                                        <input type="text">
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-6">
-                                                    <div class="default-form-box">
-                                                        <label>Phone<span>*</span></label>
-                                                        <input type="text" value="">
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-6">
-                                                    <div class="default-form-box">
-                                                        <label> Email Address <span>*</span></label>
-                                                        <input type="text" value={{ order.cart}}>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    
                                     <div class="col-12 mt-3">
                                         <div class="order-notes">
-                                            <label for="order_note">Note de la commande</label>
-                                            <textarea id="order_note" placeholder="Notes about your order, e.g. special notes for delivery.">
-
-                                            </textarea>
+                                            <label for="order_note">{{address_form.message.label}} </label>
+                                            {{ address_form.message }}
                                         </div>
-                                    </div>
-                                </div>
+                                    </div> 
+
+                                </div> 
                             </form>
                         </div>
                         <div class="col-lg-6 col-md-6">
                             <form action="#">
-                                <h3>Votre commande</h3>
+                                <h3 style="text-transform: lowercase;">Votre commande</h3>
                                 <div class="order_table table-responsive">
                                     <table>
                                         <thead>
@@ -291,37 +180,30 @@
                                         </thead>
                                         <tbody>
 
-                                            {% for item in products %}
+                                            {% for item in cart.products.all %}
                                                 
-                                            <tr style="text-transform:lowercase;">
-                                                <td style="text-transform:lowercase;"> {{ item.title|safe|capfirst }} </td>
-                                            
+                                            <tr>
+                                                <td> {{ item.title|safe|capfirst }} <strong> </strong></td>
                                                 <td> {{ item.price|floatformat:2|intcomma }} GNF </td>
                                             </tr>
 
                                             {% endfor %}
 
-                                        
 
+                                            
                                         </tbody>
                                         <tfoot>
-                                            <tr>
-                                                <th>Total du panier</th>
-                                                <td>
-                                                    {{ order.cart.total|floatformat:2|intcomma }} GNF 
-                                                </td>
+                                            <!-- <tr>
+                                                <th>Cart Subtotal</th>
+                                                <td>$215.00</td>
                                             </tr>
                                             <tr>
-                                                <th>Frais de livraison</th>
-                                                <td><strong>
-                                                    {{ order.shipping_total|floatformat:2|intcomma }} GNF 
-                                                </strong></td>
-                                            </tr>
+                                                <th>Shipping</th>
+                                                <td><strong>$5.00</strong></td>
+                                            </tr> -->
                                             <tr class="order_total">
                                                 <th>Total</th>
-                                                <td><strong>
-                                                    {{ order.total|floatformat:2|intcomma }} GNF 
-                                                </strong></td>
+                                                <td><strong>{{ cart.total|floatformat:2|intcomma}} GNF </strong></td>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -330,13 +212,14 @@
                                     <div class="panel-default">
                                         <label class="checkbox-default" for="currencyCod" data-bs-toggle="collapse"
                                             data-bs-target="#methodCod">
-                                            <input type="checkbox" id="currencyCod" style="text-transform: lowercase;">
-                                            <span style="text-transform: lowercase;">Payer à la livraison</span>
+                                            <input type="checkbox" id="currencyCod">
+                                            <span>Cash on Delivery</span>
                                         </label>
 
                                         <div id="methodCod" class="collapse" data-parent="#methodCod">
                                             <div class="card-body1">
-                                                <!-- <p>Please send a check to Store Name, Store Street, Store Town, Store State / County, Store Postcode.</p> -->
+                                                <p>Please send a check to Store Name, Store Street, Store Town, Store State
+                                                    / County, Store Postcode.</p>
                                             </div>
                                         </div>
                                     </div>
@@ -348,33 +231,26 @@
                                         </label>
                                         <div id="methodPaypal" class="collapse " data-parent="#methodPaypal">
                                             <div class="card-body1">
-                                                <!-- <p>
-                                                    Pay via PayPal; you can pay with your credit card if you don’t have a
-                                                    PayPal account.</p> -->
+                                                <p>Pay via PayPal; you can pay with your credit card if you don’t have a
+                                                    PayPal account.</p>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="order_button pt-3">
-                                        <button class="btn btn-md btn-black-default-hover" type="submit">Passer votre commande</button>
+                                        <button class="btn btn-md btn-black-default-hover" type="submit">Proceed to
+                                            PayPal</button>
                                     </div>
                                 </div>
                             </form>
                         </div>
                     </div>
-                </div> <!-- Start User Details Checkout Form -->
+                </div> 
             </div>
-        </div><!-- ...:::: End Checkout Section:::... -->
-        
+        </div>
 
-    {% endif %} 
-
+        {% endif %}
 
 
-{% endif %}
-
-
-
-
-
+    {% endif %}
 
 {% endblock content %}

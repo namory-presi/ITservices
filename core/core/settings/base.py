@@ -20,12 +20,6 @@ import moneyed
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-
-
 
 # SECRET_KEY = config("SECRET_KEY", default="django-insecure$simple.settings.local")
 DEBUG = config("DEBUG", default=True, cast=bool)
@@ -77,7 +71,7 @@ INSTALLED_APPS = [
     "core.apps.order",
     "core.apps.billing",
     "core.apps.addresses",
-    "core.apps.upload",
+    "core.apps.analytics",
 ]
 
 MIDDLEWARE = [
@@ -108,6 +102,7 @@ TEMPLATES = [
                 "core.apps.instagram.context_processors.instagramm",
                 "core.apps.blog.context_processors.blog_latest",
                 "core.apps.cart.context_processors.basket",
+                # "core.apps.shop.context_processors.cart_quantity"
             ],
         },
     },
@@ -286,8 +281,26 @@ MAILCHIMP_EMAIL_LIST_ID = "a9e03c576c"
 
 
 AUTH_USER_MODEL = 'account.User'
-LOGIN_URL = '/login/'
+LOGIN_URL = 'accounts:login'
 LOGIN_URL_REDIRECT = '/'
-LOGOUT = '/logout/'
+LOGOUT = 'accounts:logout'
 
 # AUTH_USER_MODEL = "accounts.CustomUser"  # ne
+
+
+FORCE_SESSION_TO_ONE = False
+FORCE_INACTIVE_USER_END_SESSION = False
+
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'abdulkabirkeita825@gmail.com' #sendgrid
+EMAIL_HOST_PASSWORD = '****************'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'abdulkabirkeita825@gmail.com'
+
+MANAGERS = (
+    ('abdul', 'abdul@gmail.com')
+)
+
+ADMINS = MANAGERS

@@ -58,12 +58,12 @@ class ProductAdmin(ExportActionMixin, admin.ModelAdmin):
     
     
     
-@admin.register(CategoryArticle)
-class CategorieAdmin(admin.ModelAdmin):
-    list_display = ('categorie', 'active', 'slug')
-    prepopulated_fields = {'slug':('categorie', )}
-    search_fields = ('active',)
-    list_filter = ('active', )
+# @admin.register(CategoryArticle)
+# class CategorieAdmin(admin.ModelAdmin):
+#     list_display = ('categorie', 'active', 'slug')
+#     prepopulated_fields = {'slug':('categorie', )}
+#     search_fields = ('active',)
+#     list_filter = ('active', )
     
     
     

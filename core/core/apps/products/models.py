@@ -107,28 +107,7 @@ class ProductManager(models.Manager):
     
     
 
-# class CategorieMPTTManager(managers.TreeManager):
-#     def get_queryset(self):
-#         return CategorieQuerySet(self.model, using=self._db)
-    
 
-#     def all(self):
-#         return self.get_queryset().active()
-    
-    
-#     def get_by_id(self, id):
-#         qs = self.get_queryset().filter(id=id)
-#         if qs.count() == 1:
-#             return qs.first()
-#         return None
-    
-    
-#     def get_by_slug(self, slug):
-#         qs = self.get_queryset().active().filter(slug=slug)
-#         if qs.count() == 1:
-#             return qs.first()
-#         return None
-    
     
 class Category(MPTTModel):
     cat_cku   = models.UUIDField(editable=False, unique=True, default=uuid.uuid4)
@@ -164,29 +143,29 @@ class Category(MPTTModel):
         return f'{self.title}'
       
     
-class CategoryArticle(models.Model):
-    categorie = models.CharField(max_length = 150, unique=True)
-    slug      = models.SlugField(max_length=150, unique=True)
-    active    = models.BooleanField(default=False)
-    image     = models.ImageField(upload_to=upload_image_path, blank=True, null=True, height_field=None, width_field=None, max_length=None)
-    timestamp = models.DateTimeField("date de creation", auto_now_add=True)
-    updated   = models.DateTimeField("date de modification", auto_now=True)
+# class CategoryArticle(models.Model):
+#     categorie = models.CharField(max_length = 150, unique=True)
+#     slug      = models.SlugField(max_length=150, unique=True)
+#     active    = models.BooleanField(default=False)
+#     image     = models.ImageField(upload_to=upload_image_path, blank=True, null=True, height_field=None, width_field=None, max_length=None)
+#     timestamp = models.DateTimeField("date de creation", auto_now_add=True)
+#     updated   = models.DateTimeField("date de modification", auto_now=True)
     
-    objects = CategorieManager()
+#     objects = CategorieManager()
     
-    class Meta:
-        verbose_name = 'categorie'
-        verbose_name_plural = 'categories'
+#     class Meta:
+#         verbose_name = 'categorie'
+#         verbose_name_plural = 'categories'
         
           
         
-    def get_absolute_url(self):
-        return reverse("shop:product_by_categorie", kwargs={"categorie_slug": self.slug})
+#     def get_absolute_url(self):
+#         return reverse("shop:product_by_categorie", kwargs={"categorie_slug": self.slug})
     
     
     
-    def __str__(self):
-        return f'{self.categorie}'
+#     def __str__(self):
+#         return f'{self.categorie}'
     
       
 class Product(models.Model):
@@ -249,6 +228,15 @@ class Product(models.Model):
         return None
     
     
+    
+    @property
+    def imageurl(self):
+        try:
+            url = self.image.url
+        except:
+            url = ''
+        return url
+    
     @staticmethod
     def get_all_product_by_categories(categorie_slug):
         if categorie_slug:
@@ -263,10 +251,10 @@ class Product(models.Model):
     
 
 
-# def product_pre_save_receiver(sender, instance, *args, **kwargs):
-#     if not instance.slug:
-#         instance.slug = random_string_generator()
+def product_pre_save_receiver(sender, instance, *args, **kwargs):
+    if not instance.slug:
+        instance.slug = random_string_generator()
         
         
 
-# pre_save.connect(product_pre_save_receiver, sender=Product)
+pre_save.connect(product_pre_save_receiver, sender=Product)

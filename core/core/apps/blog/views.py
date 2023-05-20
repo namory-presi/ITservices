@@ -1,4 +1,4 @@
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import *
 from .models import *
@@ -104,19 +104,7 @@ class BlogDeleteView(DeleteView):
     
     
 
-# class CategorieListView(ListView):
-#     template_name = ''
-#     context_object_name = 'categorie_list'
-    
-#     def get_queryset(self):
-#         categorie = self.kwargs['title']
-#         content = {
-#             'cat':categorie,
-#             'posts': BlogPost.objects.filter(category__title=categorie).filter(status=1)
-#         }
-#         return content
-    
-    
+
 
 
 
@@ -146,3 +134,7 @@ def post_by_categorie(request, id):
     
 
 
+def addcomment(request):
+    if request.method == "POST":
+        pass
+    return JsonResponse({'data': 'ok'})

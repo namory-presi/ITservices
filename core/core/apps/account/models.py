@@ -1,9 +1,18 @@
 from django.db import models
 from django.utils import timezone
 from django.db import models
+from django.core.mail import send_mail
+from django.template.loader import get_template
 from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser
 )
+
+
+# send_mail(subject, message, from_email, recipient_list, html_message)
+
+
+
+
 
 
 class UserManager(BaseUserManager):
@@ -56,7 +65,7 @@ class User(AbstractBaseUser):
         max_length=255,
         unique=True,
     )
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True, verbose_name='compté deja activé ?')
     staff = models.BooleanField(default=False) # a admin user; non super-user
     admin = models.BooleanField(default=False) # a superuser
 
@@ -96,6 +105,8 @@ class User(AbstractBaseUser):
     @property
     def is_staff(self):
         "Is the user a member of staff?"
+        if self.is_admin:
+            return True
         return self.staff
 
     @property

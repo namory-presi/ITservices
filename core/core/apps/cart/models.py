@@ -11,107 +11,110 @@ from decimal import Decimal
 
 
 
-# User = settings.AUTH_USER_MODEL
+User = settings.AUTH_USER_MODEL
 
 
 
-# class CartManager(models.Manager):
+class CartManager(models.Manager):
     
 
-#     def new_or_get(self, request):
+    def new_or_get(self, request):
         
-#         cart_id = request.session.get('cart_id', None)
-#         qs = self.get_queryset().filter(id=cart_id)
-#         if qs.count() == 1:
-#             new_obj = False
-#             cart_obj = qs.first()
-#             if request.user.is_authenticated and cart_obj.user is None:
-#                 cart_obj.user = request.user 
-#                 cart_obj.save()
-#         else:
-#             cart_obj =Cart.objects.new(user=request.user)
-#             new_obj = True
-#             request.session['cart_id'] = cart_obj.id
+        cart_id = request.session.get('cart_id', None)
+        qs = self.get_queryset().filter(id=cart_id)
+        if qs.count() == 1:
+            new_obj = False
+            cart_obj = qs.first()
+            if request.user.is_authenticated and cart_obj.user is None:
+                cart_obj.user = request.user 
+                cart_obj.save()
+        else:
+            cart_obj =Cart.objects.new(user=request.user)
+            new_obj = True
+            request.session['cart_id'] = cart_obj.id
         
-#         return cart_obj, new_obj
+        return cart_obj, new_obj
             
     
     
-#     def new(self, user=None):
-#         user_obj = None
-#         if user is not None:
-#             if user.is_authenticated:
-#                 user_obj = user
-#         return self.model.objects.create(user=user_obj)
+    def new(self, user=None):
+        user_obj = None
+        if user is not None:
+            if user.is_authenticated:
+                user_obj = user
+        return self.model.objects.create(user=user_obj)
 
 
 
 
 
 
-# class Cart(models.Model):
-#     user       = models.ForeignKey(User, verbose_name="client", on_delete=models.CASCADE, null=True, blank=True)
-#     products   = models.ManyToManyField(Product, verbose_name='articles', blank=True)
-#     subtotal   = models.DecimalField('total hors taxe', max_digits=100, decimal_places=2, default=0.00, validators=[MaxValueValidator(1000000000000),MinValueValidator(0)])
-#     total      = models.DecimalField('total ttc', max_digits=100, decimal_places=2, default=0.00, validators=[MaxValueValidator(1000000000000),MinValueValidator(0)])
-#     updated    = models.DateTimeField(auto_now=True, verbose_name='Modification')
-#     timestamp  = models.DateTimeField(auto_now_add=True, verbose_name='Creation')
+class Cart(models.Model):
+    user       = models.ForeignKey(User, verbose_name="client", on_delete=models.CASCADE, null=True, blank=True, editable=False)
+    products   = models.ManyToManyField(Product, verbose_name='articles', blank=True)
+    subtotal   = models.DecimalField('total hors taxe', max_digits=100, decimal_places=2, default=0.00, validators=[MaxValueValidator(1000000000000),MinValueValidator(0)])
+    total      = models.DecimalField('total ttc', max_digits=100, decimal_places=2, default=0.00, validators=[MaxValueValidator(1000000000000),MinValueValidator(0)])
+    updated    = models.DateTimeField(auto_now=True, verbose_name='Modification')
+    timestamp  = models.DateTimeField(auto_now_add=True, verbose_name='Creation')
     
+    @staticmethod
+    def commande(self):
+        return f'{self.id}'
     
-#     class Meta:
-#         verbose_name = 'Panier'
-#         verbose_name_plural = 'Paniers'
+    class Meta:
+        verbose_name = 'Panier'
+        verbose_name_plural = 'Paniers'
         
         
-#     objects = CartManager()
+    objects = CartManager()
         
     
-#     def __str__(self):
-#         return f'{self.id}'
+    def __str__(self):
+        return f'Panier ({self.id})'
    
    
    
 
 
 
-# def m2m_changed_pre_save_cart_receiver(sender, instance, action, *args, **kwargs):
+def m2m_changed_pre_save_cart_receiver(sender, instance, action, *args, **kwargs):
 
-#     if action == 'post_add' or action == 'post_remove' or action == 'post_clear':
+    if action == 'post_add' or action == 'post_remove' or action == 'post_clear':
 
-#         products = instance.products.all()
-#         total = 0
+        products = instance.products.all()
+        total = 0
         
-#         for x in products:
-#             total += x.price
+        for x in products:
+            total += x.price
             
-#         instance.total = total
+        instance.total = total
         
-#         if instance.subtotal != total:
-#             instance.subtotal = total
+        if instance.subtotal != total:
+            instance.subtotal = total
             
-#             instance.save()
+            instance.save()
              
-#         print(instance.total)
+        print(instance.total)
 
  
     
     
 
-# def pre_save_cart_receiver(sender, instance, *args, **kwargs):
+def pre_save_cart_receiver(sender, instance, *args, **kwargs):
     
-#     TVA = 1.18
-#     if instance.subtotal > 0:
-#         instance.total = Decimal(instance.subtotal) * Decimal(TVA)
-#     else:
-#         instance.total = 0.00
+    TVA = 1.18
+    if instance.subtotal > 0:
+        instance.total = Decimal(instance.subtotal) * Decimal(TVA)
+    else:
+        instance.total = 0.00
     
 
 
 
 
 
-# pre_save.connect(pre_save_cart_receiver, sender=Cart)
-# m2m_changed.connect(m2m_changed_pre_save_cart_receiver, sender=Cart.products.through)
+pre_save.connect(pre_save_cart_receiver, sender=Cart)
+m2m_changed.connect(m2m_changed_pre_save_cart_receiver, sender=Cart.products.through)
 
 
 

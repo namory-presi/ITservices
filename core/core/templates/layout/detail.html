@@ -105,25 +105,22 @@
                                         class="ion-checkmark-circled"></i></span> 200 EN STOCK</div>
                         </div>
                         <!-- Product Variable Single Item -->
-                        <div class="d-flex align-items-center ">
-                            {% comment %} {% csrf_token %} {% endcomment %}
-                            <div class="variable-single-item ">
-                                <span>Quantité</span>
-                                <div class="product-variable-quantity">
-                                    <!-- <input min="1" max="100" value="1" id="qty" type="number" inputmode="numeric"> -->
-                                <select name="qty" id="select">
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                </select>
-                            </div>
+                        <div class="d-flex align-items-center">
 
-                            </div>
+                            {% include 'include/add-or-update-to-cart.html' with product=object cart=cart %}
+                            <!-- <div>
+                            
+                                <div class="variable-single-item">
+                                    <span>Quantité</span>
+                                    <div class="product-variable-quantity">
+                                    <input min="1" max="100" value="1" id="qty" type="number" inputmode="numeric"> 
+                                </div>
 
-                            <div class="product-add-to-cart-btn">
-                                <button id="add-button" value="{{detail.id}}" class="btn btn-block btn-lg btn-black-default-hover">Ajouter</button>
-                            </div>
+                            </div> -->
+
+                            <!-- <div class="product-add-to-cart-btn">
+                                <a id="{{detail.id}}" style="cursor: pointer;" class="update-cart" data-product="{{detail.id}}" data-action="add"  value="{{detail.id}}" class="btn btn-block btn-lg btn-black-default-hover">Ajouter</a>
+                            </div> -->
                         </div>
                         <!-- Start  Product Details Meta Area-->
                         <div class="product-details-meta mb-20">
@@ -503,32 +500,8 @@
 
 
 
-<script>
-    $(document).on('click', '#add-button', function (e) {
-        e.preventDefault();
-        console.log("Article qty")
-        console.log($('#select option:selected').text());
-        $.ajax({
-            type: 'POST',
-            url: '{% url "cart:basket_add" %}',
-            data:{
-                productid: $("#add-button").val(),
-                productqty: $("#select").val(),
-                csrfmiddlewaretoken: "{{csrf_token}}",
-                action: 'post'
-            },
-            success: function(json){
-                console.log(json)
-                document.getElementById('basket-qty').innerHTML = json.qty
-            },
-            error: function(xhr, errmsg, err){
-
-            }
-        })
-        
-    })
-
-</script>
 
 
 {% endblock content %}
+
+

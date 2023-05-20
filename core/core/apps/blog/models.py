@@ -104,7 +104,7 @@ class Category(models.Model): #Category for the Article
 
 class BlogPost(models.Model):
     title = models.CharField(max_length=200, unique=True, verbose_name='titre') #Title of the Article
-    slug = models.SlugField(max_length=200, unique=True, blank=True, null=True) #Unique identifier for the article
+    slug = models.SlugField(max_length=200, unique=True, editable=False, blank=True, null=True) #Unique identifier for the article
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blog_posts', verbose_name='redacteur') #Author of the Article
     description = models.CharField(max_length=100) #Short Description of the article
     content = HTMLField(verbose_name="contenu") #Content of the article, you need to install CKEditor

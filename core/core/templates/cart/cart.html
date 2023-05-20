@@ -7,125 +7,135 @@
 {% block content %}
 
 
-    {% if cart.products.exists %}
+    {% if cart.products.exists %} 
 
 
+        <div class="cart-section" style="margin-block:70px; ">
+                
+            <div class="cart-table-wrapper" data-aos="fade-up" data-aos-delay="0">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="table_desc">
+                                <div class="table_page table-responsive">
+                                    <table>
+                                    
+                                        <thead>
+                                            <tr>
+                                                <th class="product_remove">Retirer</th>
+                                                <th class="product_thumb">Image</th>
+                                                <th class="product_name">Article</th>
+                                                <th class="product-price">Prix</th>
+                                                <th class="product_quantity">Quantité</th>
+                                                <th class="product_total">Total</th>
+                                            </tr>
+                                        </thead> 
+                                        <tbody>
+                                            
+                                            {% for item in cart.products.all %}
 
-            <!-- ...:::: Start Cart Section:::... -->
-            <div class="cart-section" style="margin-block:70px; ">
-                <!-- Start Cart Table -->
-                <div class="cart-table-wrapper" data-aos="fade-up" data-aos-delay="0">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="table_desc">
-                                    <div class="table_page table-responsive">
-                                        <table>
-                                            <!-- Start Cart Table Head -->
-                                            <thead>
+                                
                                                 <tr>
-                                                    <th class="product_remove">Retirer</th>
-                                                    <th class="product_thumb">Image</th>
-                                                    <th class="product_name">Article</th>
-                                                    <th class="product-price">Prix</th>
-                                                    <th class="product_quantity">Quantié</th>
-                                                    <th class="product_total">Total</th>
+
+                                                    <!-- <td class="product_remove">
+                                                        <a href="">
+                                                            <i class="fa fa-trash-o"></i>
+                                                        </a>
+                                                    </td> -->
+
+                                                    {% include 'include/add-or-update-to-cart.html' with product=item cart=cart in_cart=True %}
+
+
+                                                    <td class="product_thumb">
+                                                        <a href="{{ item.get_absolute_url }}">
+                                                            <img src="{{ item.image.url }}" alt="{{ item.title|safe|capfirst }}" loading="lazy">
+                                                        </a>
+                                                    </td>
+                                                    <td class="product_name">
+                                                        <a href="{{ item.get_absolute_url }}" style="text-transform: lowercase;">
+                                                            {{ item.title|safe|capfirst }}
+                                                        </a>
+                                                    </td>
+                                                    <td class="product-price">{{ item.price|floatformat:2|intcomma }} GNF</td>
+                                                    <td class="product_quantity"> 
+                                                        <button class="chg-quantity update-cart" data-product="{{item.product.id}}" data-action="remove">
+                                                            <ion-icon name="chevron-back-outline"></ion-icon>
+                                                        </button>
+
+
+                                                        <input  value="" type="number" min="1" max="100" inputmode="numeric">
+
+                                                        <button class="chg-quantity update-cart" data-product="{{item.product.id}}" data-action="add">
+                                                            <ion-icon name="chevron-forward-outline"></ion-icon>
+                                                        </button>
+
+                                                        
+                                                    </td>
+                                                    <td class="product_total"> {{ item.price|floatformat:2|intcomma }} GNF </td>
                                                 </tr>
-                                            </thead> <!-- End Cart Table Head -->
-                                            <tbody>
-                                                
-                                                {% for product in cart.products.all %}
+                        
 
-                                                    <!-- Start Cart Single Item-->
-                                                    <tr>
-
-                                                        <td class="product_remove">
-                                                            <a href="{% url 'cart:remove' product.id %}">
-                                                                <i class="fa fa-trash-o"></i>
-                                                            </a>
-                                                        </td>
-
-
-
-                                                        <td class="product_thumb">
-                                                            <a href="{{ product.get_absolute_url }}">
-                                                                <img src="{{ product.image.url }}" alt="{{ product.title|safe|capfirst }}" loading="lazy">
-                                                            </a>
-                                                        </td>
-                                                        <td class="product_name">
-                                                            <a href="{{ product.get_absolute_url }}" style="text-transform: lowercase;">
-                                                                {{ product.title|safe|capfirst }}
-                                                            </a>
-                                                        </td>
-                                                        <td class="product-price">{{ product.price|floatformat:2|intcomma }} GNF</td>
-                                                        <td class="product_quantity"> <input min="1" max="100" value="1" type="number" inputmode="numeric"></td>
-                                                        <td class="product_total">$130.00</td>
-                                                    </tr>
-                                                    <!-- End Cart Single Item-->
-
-                                                {% endfor %}
-                                                
-                                            </tbody>
-                                        </table>
+                                            {% endfor %}
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- <div class="cart_submit">
+                                    <button class="btn btn-md btn-golden" type="submit">update cart</button>
+                                </div> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+            <div class="coupon_area">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6">
+                            <div class="coupon_code left" data-aos="fade-up" data-aos-delay="200">
+                                <h3>Coupon</h3>
+                                <div class="coupon_inner">
+                                    <p>Entrez votre code coupon.</p>
+                                    <input class="mb-2" placeholder="Coupon code" type="text">
+                                    <button type="submit" class="btn btn-md btn-golden">Appliquez</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <div class="coupon_code right" data-aos="fade-up" data-aos-delay="400">
+                                <h3>Total du panier</h3>
+                                <div class="coupon_inner">
+                                    <!-- <div class="cart_subtotal">
+                                        <p>Total HT</p>
+                                        <p class="cart_amount"> GNF</p>
                                     </div>
-                                    <div class="cart_submit">
-                                        <button class="btn btn-md btn-golden" type="submit">update cart</button>
+                                    <div class="cart_subtotal ">
+                                        <p>Livraison</p>
+                                        <p class="cart_amount"> GNF</p>
+                                    </div> -->
+                        
+                                    <div class="cart_subtotal">
+                                        <p>Total TTC</p>
+                                        <p class="cart_amount"> {{cart.total|floatformat:2|intcomma}} GNF</p>
+                                    </div>
+
+                                    <div class="checkout_btn">
+                                        <a href="{% url 'cart:checkout' %}"  class="btn btn-md btn-golden">Commander</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div> <!-- End Cart Table -->
+                </div>
+            </div> 
+        </div> 
 
-                <!-- Start Coupon Start -->
-                <div class="coupon_area">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-lg-6 col-md-6">
-                                <div class="coupon_code left" data-aos="fade-up" data-aos-delay="200">
-                                    <h3>Coupon</h3>
-                                    <div class="coupon_inner">
-                                        <p>Enter your coupon code if you have one.</p>
-                                        <input class="mb-2" placeholder="Coupon code" type="text">
-                                        <button type="submit" class="btn btn-md btn-golden">Apply coupon</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-md-6">
-                                <div class="coupon_code right" data-aos="fade-up" data-aos-delay="400">
-                                    <h3>Total du panier</h3>
-                                    <div class="coupon_inner">
-                                        <div class="cart_subtotal">
-                                            <p>Total HT</p>
-                                            <p class="cart_amount">{{ cart.subtotal|floatformat:2|intcomma }} GNF</p>
-                                        </div>
-                                        <div class="cart_subtotal ">
-                                            <p>Livraison</p>
-                                            <p class="cart_amount">{{ cart.subtotal|floatformat:2|intcomma }} GNF</p>
-                                        </div>
-                                        {% comment %} <a href="#">Livraison</a> {% endcomment %}
 
-                                        <div class="cart_subtotal">
-                                            <p>Total TTC</p>
-                                            <p class="cart_amount">{{ cart.total|floatformat:2|intcomma }} GNF</p>
-                                        </div>
-                                        <div class="checkout_btn">
-                                            <a href="{% url 'cart:checkout' %}"  class="btn btn-md btn-golden">Commander</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> <!-- End Coupon Start -->
-            </div> <!-- ...:::: End Cart Section:::... -->
 
-        
-
-    {% else %}
-
+    {% else %} 
 
             <!-- ...::::Start About Us Center Section:::... -->
+
             <div class="empty-cart-section section-fluid" style="margin-block: 70px;">
                 <div class="emptycart-wrapper">
                     <div class="container">
@@ -136,14 +146,15 @@
                                         <img class="img-fluid" src="{% static 'assets/images/emprt-cart/empty-cart.png' %}" alt="">
                                     </div>
                                     <h4 class="title">Votre panier est vide</h4>
-                                    <!-- <h6 class="sub-title" style="text-transform:lowercase; ">Aucun article dans votre panier !</h6> -->
                                     <a href="{% url 'shop:main' %}" class="btn btn-lg btn-golden">Continuer le shopping</a>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div> <!-- ...::::End  About Us Center Section:::... -->
+            </div>  
+            
+            <!-- ...::::End  About Us Center Section:::... -->
 
 
     {% endif %}

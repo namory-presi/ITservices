@@ -285,7 +285,7 @@
                                             </a>
                                             <div class="action-link">
                                                 <div class="action-link-left">
-                                                    <a href="#">Ajouter au panier </a>
+                                                    <a class="update-cart" data-product="{{article.id}}" data-action="add"  id="{{article.id}}" style="cursor:pointer; ">Ajouter au panier </a>
                                                 </div>
                                                 <div class="action-link-right">
                                                     <!-- <a href="#" data-bs-toggle="modal"
@@ -1053,7 +1053,7 @@
             <div class="banner-single-item banner-style-4 banner-animation banner-color--golden float-left img-responsive"
                 data-aos="fade-up" data-aos-delay="0">
                 <div class="image">
-                    <img class="img-fluid" src="assets/images/banner/banner-style-4-img-1.jpg" alt="">
+                    <img class="img-fluid" src="{% static 'assets/images/banner/banner-style-4-img-1.jpg' %}" alt="">
                 </div>
                 <a href="product-details-default.html" class="content">
                     <div class="inner">
@@ -1068,7 +1068,7 @@
             <div class="banner-single-item banner-style-4 banner-animation banner-color--golden float-left img-responsive"
                 data-aos="fade-up" data-aos-delay="200">
                 <div class="image">
-                    <img class="img-fluid" src="assets/images/banner/banner-style-4-img-2.jpg" alt="">
+                    <img class="img-fluid" src="{% static 'assets/images/banner/banner-style-4-img-2.jpg' %}" alt="">
                 </div>
                 <a href="product-details-default.html" class="content">
                     <div class="inner">
@@ -1078,12 +1078,11 @@
                     <span class="round-btn"><i class="ion-ios-arrow-thin-right"></i></span>
                 </a>
             </div>
-            <!-- End Banner Single Item -->
-            <!-- Start Banner Single Item -->
+
             <div class="banner-single-item banner-style-4 banner-animation banner-color--golden float-left img-responsive"
                 data-aos="fade-up" data-aos-delay="400">
                 <div class="image">
-                    <img class="img-fluid" src="assets/images/banner/banner-style-4-img-3.jpg" alt="">
+                    <img class="img-fluid" src="{% static 'assets/images/banner/banner-style-4-img-3.jpg' %}" alt="">
                 </div>
                 <a href="product-details-default.html" class="content">
                     <div class="inner">
@@ -1093,12 +1092,11 @@
                     <span class="round-btn"><i class="ion-ios-arrow-thin-right"></i></span>
                 </a>
             </div>
-            <!-- End Banner Single Item -->
-            <!-- Start Banner Single Item -->
+
             <div class="banner-single-item banner-style-4 banner-animation banner-color--golden float-left img-responsive"
                 data-aos="fade-up" data-aos-delay="600">
                 <div class="image">
-                    <img class="img-fluid" src="assets/images/banner/banner-style-4-img-4.jpg" alt="">
+                    <img class="img-fluid" src="{% static 'assets/images/banner/banner-style-4-img-4.jpg' %}" alt="">
                 </div>
                 <a href="product-details-default.html" class="content">
                     <div class="inner">
@@ -1108,14 +1106,12 @@
                     <span class="round-btn"><i class="ion-ios-arrow-thin-right"></i></span>
                 </a>
             </div>
-            <!-- End Banner Single Item -->
+
         </div>
     </div>
-    <!-- End Banner Section -->
 
-    <!-- Start Blog Slider Section -->
     <div class="blog-default-slider-section section-top-gap-100 section-fluid">
-        <!-- Start Section Content Text Area -->
+
         <div class="section-title-wrapper" data-aos="fade-up" data-aos-delay="0">
             <div class="container">
                 <div class="row">
@@ -1123,27 +1119,26 @@
                         <div class="section-content-gap">
                             <div class="secton-content">
                                 <h3 class="section-title">ARTICLES RECENTS</h3>
-                                <!-- <p>Present posts in a best way to highlight interesting moments of your blog.</p> -->
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Start Section Content Text Area -->
+
         <div class="blog-wrapper" data-aos="fade-up" data-aos-delay="200">
             <div class="container">
                 <div class="row">
                     <div class="col-12">
                         <div class="blog-default-slider default-slider-nav-arrow">
-                            <!-- Slider main container -->
+                         
                             <div class="swiper-container blog-slider">
-                                <!-- Additional required wrapper -->
+                             
                                 <div class="swiper-wrapper">
 
                                     {% for post in latest_post %}
                                         
-                                    <!-- Start Product Default Single Item -->
+                                  
                                     <div class="blog-default-single-item blog-color--golden swiper-slide">
                                         <div class="image-box">
                                             <a href="{{ post.get_absolute_url }}" class="image-link">
@@ -1164,7 +1159,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- End Product Default Single Item -->
 
                                     {% endfor %}
 
@@ -1188,9 +1182,9 @@
             </div>
         </div>
     </div>
-    <!-- End Blog Slider Section -->
 
-    <!-- Start Instagram Section -->
+
+
     <div class="instagram-section section-top-gap-100 section-inner-bg">
         <div class="instagram-wrapper" data-aos="fade-up" data-aos-delay="0">
             <div class="container">
@@ -1215,8 +1209,10 @@
             </div>
         </div>
     </div>
-    <!-- End Instagramr Section -->
+
 
 
 
 {% endblock content %}
+
+

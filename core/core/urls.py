@@ -3,11 +3,13 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls import (handler400, handler403, handler404, handler500)
+from core.apps.account.views import LoginView
+
 
 urlpatterns = [
-    
-    path('account/', include('core.apps.account.urls', namespace='accounts')),
-    path("upload/", include("core.apps.upload.urls", namespace="upload")),
+
+    path('accounts/', include('core.apps.account.urls', namespace='accounts')),
+    path('analytics/', include('core.apps.analytics.urls', namespace='analytics')),
     path("address/", include("core.apps.addresses.urls", namespace="address")),
     path('contact/', include('core.apps.contact.urls', namespace='contact')),
     path('order/', include('core.apps.order.urls', namespace='order')),
@@ -20,7 +22,7 @@ urlpatterns = [
     path('cart/', include('core.apps.cart.urls', namespace='cart')),
     path('search/', include('core.apps.search.urls', namespace='search')),
     path('tinymce/', include('tinymce.urls')),
-    path('__debug__/', include('debug_toolbar.urls')),
+    # path('__debug__/', include('debug_toolbar.urls')),
     path("admin/", admin.site.urls),
     path('', include('core.apps.products.urls', namespace='products')),
     
@@ -32,9 +34,9 @@ if settings.DEBUG:
     
     
     
-admin.site.site_header ='IT-SERVICE'                    # default: "Django Administration"
+admin.site.site_header ='IT-SERVICES'                    # default: "Django Administration"
 admin.site.index_title ="Interface d'administration"                 # default: "Site administration"
-admin.site.site_title = 'IT-SERVICE'  # default: "Django site admin"
+admin.site.site_title = 'IT-SERVICES'  # default: "Django site admin"
 
 
 

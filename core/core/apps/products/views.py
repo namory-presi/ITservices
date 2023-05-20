@@ -5,14 +5,20 @@ from django.views.generic import (ListView, DetailView, DeleteView, CreateView, 
 from core.apps.marketing.forms import EmailForm
 from core.apps.marketing.models import Newsletter
 from core.apps.marketing.views import subscribe
-# from core.apps.cart.models import Cart
+from core.apps.cart.models import Cart
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import *
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
 from mailchimp_marketing import Client
 from django.views.decorators.csrf import csrf_exempt
+from core.apps.analytics.signals import *
+from core.apps.analytics.mixins import ObjectViewMixin
+from django.contrib.auth.models import AnonymousUser 
 
 
+
+# PRODUCT LIST VIEW
 class ProductListView(ListView):
     model = Product
     form_class = EmailForm
@@ -25,34 +31,30 @@ class ProductListView(ListView):
         print(categories.count())
         return Product.objects.all()
     
-    # def get(self, request, *args, **kwargs):
-    #     form = self.form_class
-    #     return render(request, 'layout/index.html', {'form': form})
 
-    # def post(self, request, *args, **kwargs):
-    #     form = self.form_class(request.POST)
-    #     if form.is_valid():
-    #         form.save()
-    #         new_contact = Newsletter.objects.create(
-    #             **form.cleaned_data
-    #         )
-
-    #         new_contact.save()
-    #         subscribe(new_contact)
-
-    #         messages.success(request, "Merci de votre souscription à notre boite aux lettres ! ") # message
-    #         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-            
-    #         return HttpResponseRedirect(reverse('/'))
-    #     else:
-    #         return render(request, self.template_name, {'form': form})
         
     
+# CUSTOMER PRODUCT VIEW HISTORY
+class UserProductHistoryView(LoginRequiredMixin, ListView):
+
+    template_name = 'registration/history.html'
+
     
+    def get_context_data(self, *args, **kwargs):
+        context = super(UserProductHistoryView, self).get_context_data(*args,**kwargs)
+        return context
     
+    def get_queryset(self, *args, **kwargs):
+        request = self.request
+        views = request.user.objectview_set.by_model(Product, model_queryset=True)
+        return views
+    
+
+
+
+
+# PRODUCT DETAIL VIEW
 class ProductDetailView(DetailView):
-    # qs = Product.objects.all()
-    
     template_name = 'layout/detail.html'
     context_object_name = 'detail'
     slug_url_kwarg = 'slug'
@@ -60,8 +62,8 @@ class ProductDetailView(DetailView):
     def get_context_data(self, *args, **kwargs):
         request = self.request
         context = super(ProductDetailView, self).get_context_data(*args,**kwargs)
-        # cart_obj, new_obj = Cart.objects.new_or_get(request)
-        # context["cart"] = cart_obj
+        cart_obj, new_obj = Cart.objects.new_or_get(request)
+        context["cart"] = cart_obj
         try:
             context['related_products'] = self.get_object().related
         except AttributeError:
@@ -70,8 +72,8 @@ class ProductDetailView(DetailView):
         
     
     def get_object(self, *args, **kwargs):
-        request = self.request
         slug = self.kwargs.get('slug')
+        request = self.request
         try:
             instance = Product.objects.get_by_slug(slug)
         except Product.DoesNotExist:
@@ -81,16 +83,23 @@ class ProductDetailView(DetailView):
             instance = qs.first()
         except:
             raise Http404("Cet article n'existe pas !!!")
+
+        # if not request:
+        #     pass
+        # else:
+        
+        
+        # object_viewed_signal.send(instance.__class__, instance=instance, request=request)
+
+
+        
         return instance
     
     
     
   
-  
-  
-  
+ 
 
-@csrf_exempt
 def handle404(request, exception):
     
     template_name = 'include/404.html'
@@ -102,10 +111,6 @@ def handle404(request, exception):
 
 
 
-
-
-
-@csrf_exempt
 def shop(request):
     categories = None
     products = Product.objects.all().order_by('-id')
@@ -125,8 +130,7 @@ def shop(request):
   
 
     
-    
-@csrf_exempt
+
 def categorie_products(request, id, categorie_slug):
     categories = Category.objects.all().filter(active=True)
     products = Product.objects.all().filter(category__id=id, category__slug=categorie_slug)

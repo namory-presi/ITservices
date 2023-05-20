@@ -5,13 +5,15 @@
     {% csrf_token %}
     <input type="hidden" name="product_id" value="{{product.id}}">
 
-    {% comment %} {% if in_cart %}
+    {% if in_cart %}
     
-        <div class="product-add-to-cart-btn">
-            <button type="submit" class="btn btn-block btn-lg btn-black-default-hover" data-bs-toggle="modal" data-bs-target="#modalAddcart">- Retirer</button>
-        </div>
+        <td class="product_remove">
+            <button type="submit" value="{{product.id}}">
+                <i class="fa fa-trash-o"></i>
+            </button>
+        </td>
 
-    {% else %}  {% endcomment %}
+    {% else %} 
 
         <div class="d-flex align-items-center">
                             
@@ -34,5 +36,5 @@
         </div>
 
     
-    {% comment %} {% endif %} {% endcomment %}
+   {% endif %} 
 </form>

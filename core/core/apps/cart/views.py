@@ -1,163 +1,203 @@
-from django.http import HttpResponse, JsonResponse
+from django.http import *
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
-from core.apps.order.models import Orders
-# from .models import Cart
+from core.apps.order.models import *
+from .models import Cart
 from core.apps.products.models import Product
 from core.apps.account.models import *
 from core.apps.account.forms import *
 from core.apps.billing.models import *
 from core.apps.addresses.forms import *
 from .basket import Basket
-
+from core.apps.order.models import Orders
+import json
+from core.apps.analytics.signals import *
+from core.apps.addresses.forms import AdressForm
 
 
 
 def cart(request):
-    
-    # cart_obj, new_obj = Cart.objects.new_or_get(request=request)
-    
+ 
+    cart, new_obj = Cart.objects.new_or_get(request=request)
+    print(f"panier {cart.products.all()}")
     template_name = 'cart/cart.html'
     context = {
-        'cart': cart_obj
+        'cart':cart
     }
-    
     return render(request, template_name, context)
     
-    
+
+
 
 
 def cart_update(request):
-    product_id = request.POST.get('product_id')
-    # obj = None
-    # if product_id is not None:
-    #     try:
-    #         obj = Product.objects.get(id=product_id)
-    #         cart_obj, new_obj = Cart.objects.new_or_get(request=request)
-            
-    #     except Product.DoesNotExist:
-            
-    #         return redirect('cart:main')
-        
-    #     if obj in cart_obj.products.all():
-    #         print(True)
-    #         cart_obj.products.remove(obj)
-    #     else:
-    #         cart_obj.products.add(obj)
-        
-    #     print(False)
-    #     request.session['cart_item'] = cart_obj.products.count()
-    #     print(f"quantité: {request.session['cart_item']}")
-            
-        
-    # cart_obj.products.remove(obj)
+    print(request.POST)
+    product_id = request.POST.get("product_id")
+
     
-    # return redirect(obj.get_absolute_url())
-    # return redirect('cart:main')
-
-
-
-
-
-
-def remove_item_in_the_cart(request, product_id):
-
     if product_id is not None:
         try:
-            obj = Product.objects.get(id=product_id)
-            # cart_obj, new_obj = Cart.objects.new_or_get(request=request)
-            
+            obj = Product.objects.get_by_id(id=product_id)
         except Product.DoesNotExist:
+            return redirect("cart:main")
+        
+        cart_obj, new_obj = Cart.objects.new_or_get(request=request)
+        if obj in cart_obj.products.all():
+            cart_obj.products.remove(obj)
+        else:
+            cart_obj.products.add(obj)
             
-            return redirect('cart:main')
+        request.session['cart_items'] = cart_obj.products.count()
         
-        # if obj in cart_obj.products.all():
-        #     print(True)
-        # 
-        # cart_obj.products.remove(obj)
-        # else:
-        #     cart_obj.products.add(obj)
-        
-        print(False)
-        # request.session['cart_item'] = cart_obj.products.count()
-        print(f"quantité: {request.session['cart_item']}")
-            
-        
-    # cart_obj.products.remove(obj)
-    
-    # return redirect(obj.get_absolute_url())
-    return redirect('cart:main')
+    return redirect("cart:main")
 
 
 
 
 
-@login_required(login_url="account:login")
-def checkout_home(request):
-    # cart_obj, cart_created = Cart.objects.new_or_get(request=request)
-
+# @login_required(login_url='account:login')
+def chechout_homepage(request):
+    cart_obj, cart_created = Cart.objects.new_or_get(request=request)
     order_obj = None
     
-    # if cart_created or cart_obj.products.count() == 0:
-    #     return redirect("cart:main")
+    if cart_created or cart_obj.products.count() == 0:
+        return redirect("cart:main")
 
-        
+
 
     login_form = UserLogin()
     guest_form = GuestForm()
     address_form = AdressForm()
     billing_address_form = AdressForm()
     
-    
     billing_profile, billing_profile_created = BillingProfile.objects.new_or_get(request=request)
 
     
-    # if billing_profile is not None:
-    #     order_obj = Orders.objects.new_or_get(billing_profile, cart_obj)
-
-    
+    if billing_profile is not None:
+        order_obj, order_obj_created = Orders.objects.new_or_get(billing=billing_profile, cart=cart_obj)
+        
+    print(f"mes commandes {order_obj} - {cart_obj} ")
     
     template_name = 'cart/checkout.html'
     context = {
-        "order": order_obj,
-        # "products":cart_obj.products.all(),
-        "billing_profile":billing_profile,
+        "object": order_obj,
+        'cart': cart_obj,
+        'billing_profile': billing_profile,
         'login_form': login_form,
-        "guest_form": guest_form,
-        "address_form": address_form,
-        "billing_address_form": billing_address_form
+        'guest_form': guest_form,
+        'address_form': address_form,
+        'billing_address_form': billing_address_form
     }
     
     
     return render(request, template_name, context)
     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# def cart(request):
+
+#     if  request.user.is_authenticated:
+#         user = request.user 
+#         order, created = Order.objects.get_or_create(customer=user, completed=False)
+#         items = order.orderitem_set.all()
+#     else:
+#         items = []
+#         order = {'get_cart_total': 0.00, 'get_cart_items': 0}
+
+#     template_name = 'cart/cart.html'
+#     context = {
+#         'cart': items,
+#         'order': order 
+#     }
     
-def basket_summary(request):
-    basket = Basket(request=request)
-    
-    template_name = 'cart/cart.html'
-    context = {
-        'basket': basket
-    }
-    return render(request, template_name, context)
-    
+#     return render(request, template_name, context)
     
     
 
-def basket_add(request):
-    basket = Basket(request=request)
-    if request.POST.get('action') == 'post':
+
+
+
+@login_required(login_url='/login')
+def checkout(request):
+    
+    shipping_form = AdressForm(request.POST or None)
+
+    if  request.user.is_authenticated:
+        user = request.user 
+        order, created = Order.objects.get_or_create(customer=user, completed=False)
+
+        items = order.orderitem_set.all()
+    else:
+        items = []
+        order = {'get_cart_total': 0.00, 'get_cart_items': 0}
+
+    template_name = 'cart/checkout.html'
+    context = {
+        'cart': items,
+        'order': order,
+        'shipping': AdressForm
+    }
+    
+    return render(request, template_name, context)
+    
+ 
+ 
+ 
+ 
+ 
+def updateItem(request):
+    
+    data = json.loads(request.body)
+    productid = data['productId'] 
+    action = data['action']
+         
+    print(f'article {productid}  / action {action}')
+    
+    customer = request.user 
+    product = Product.objects.get_by_id(id=productid)
+    order, created = Order.objects.get_or_create(
+        customer=customer,
+        completed=False
+    )
+    orderitem, created = OrderItem.objects.get_or_create(
+        order=order, 
+        product=product
+    )
+    
+    if action == 'add':
+        orderitem.quantity = (orderitem.quantity + 1)
+    elif action == 'remove':
+        orderitem.quantity = (orderitem.quantity - 1)
         
-        product_id = int(request.POST.get('productid'))
-        qty = int(request.POST.get('productqty'))
-        product = get_object_or_404(Product, id=product_id)
-        
-        basket.add(product=product, qty=qty)
-        
-        basket_qty = basket.__len__()
-        
-        response = JsonResponse({
-            'product': product_id,
-            'qty':basket_qty,
-        })
-        return response
+    orderitem.save()
+    
+    if orderitem.quantity <= 0:
+        orderitem.delete()
+
+    return JsonResponse("Article ajouté", safe=False)

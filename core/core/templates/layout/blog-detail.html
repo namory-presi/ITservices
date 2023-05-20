@@ -157,7 +157,7 @@
                                 <p>Your email address will not be published. Required fields are marked *</p>
                             </div>
 
-                            <form action="#" method="post">
+                            <form action="#" method="POST" id="myform">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="default-form-box mb-20">
@@ -191,7 +191,75 @@
     </div> <!-- ...:::: End Blog Single Section:::... -->
 
 
+<script>
 
+    $(document).on('click', "#newcomment, #newcommentinner", function (e) {
+        e.preventDefault();
+        var button = $(this).attr("value");
+        $.ajax({
+            type: "POST",
+            url: '{% url 'blog:comment' %}',
+            data: $("#", + button).serialize(),
+            cache: false,
+            success: function (json) {},
+            error: function (xhr, errmsg, err){}
+        })
+    } )
+
+
+
+
+
+
+
+
+
+
+
+    function formExit(){
+        document.getElementById("newForm").remove();
+    }
+
+    function myFunction(id){
+        if(document.contains(document.getElementById("newForm"))){
+            document.getElementById("newForm").remove();
+        }
+    }
+
+    var d1 = document.getElementById(id);
+
+    d1.insertAdjacentElement('afterend', '<form action="#" method="POST" id="myform"> \
+        {% csrf_token %} \
+        <div class="row"> \
+            <select name="parent" id="id_parent">\
+                <option value="' + id + '" selected="'+id+'"></option>\
+            </select>\
+            <div class="col-md-6"> \
+                <div class="default-form-box mb-20">\
+                    <label for="comment-name">Your name <span>*</span></label> \
+                    <input id="comment-name" type="text" placeholder="Enter your name" required> \
+                </div> \
+            </div> \
+            <div class="col-md-6"> \
+                <div class="default-form-box mb-20"> \
+                    <label for="comment-email">Your Email <span>*</span></label> \
+                    <input id="comment-email" type="email" placeholder="Enter your email" \
+                        required> \
+                </div> \
+            </div> \
+            <div class="col-12"> \
+                <div class="default-form-box mb-20"> \
+                    <label for="comment-review-text">Commentez <span>*</span></label> \
+                    <textarea id="comment-review-text" placeholder="Laissez votre commentaire" required style="resize:none;"></textarea> \
+                </div> \
+            </div> \
+            <div class="col-12"> \
+                <button class="btn btn-md btn-golden" type="submit">Post Comment</button> \
+            </div> \
+        </div> \
+    </form>'
+    ); 
+</script>
 
 
 

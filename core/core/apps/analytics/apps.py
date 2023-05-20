@@ -1,6 +1,7 @@
 from django.apps import AppConfig
 
 
-class UploadConfig(AppConfig):
+class AnalyticsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'core.apps.upload'
+    name = 'core.apps.analytics'
+    

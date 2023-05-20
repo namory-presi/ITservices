@@ -34,14 +34,14 @@
                             <h5 class="title">MON COMPTE</h5>
                             <ul class="footer-nav">
                                 {% if request.user.is_authenticated %}
-                                <li><a href="{% url 'account:logout' %}">Déconnecter</a></li>
+                                <li><a href="{% url 'account:dashboard' %}">Mon compte</a></li>
                                 {% else %}
-                                <li><a href="{% url 'account:login' %}">Compte</a></li>
+                                <li><a href="{% url 'account:login' %}">Se connecter</a></li>
                                 {% endif %}
                                 <li><a href="wishlist.html">Wishlist</a></li>
                                 <li><a href="privacy-policy.html">Privacy Policy</a></li>
                                 <li><a href="faq.html">Frequently Questions</a></li>
-                                <li><a href="#">Order History</a></li>
+                                <li><a href="{% url 'account:history-product' %}">Historique des articles</a></li>
                             </ul>
                         </div>
                         <!-- End Footer Single Item -->
